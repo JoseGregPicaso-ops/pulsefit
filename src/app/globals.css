@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #15171c;
+  color: #f3f1ea;
+}
+
+/* Tick-mark divider - our signature detail, like marks on a barbell */
+.tick-divider {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #8b93a1 0px,
+    #8b93a1 4px,
+    transparent 4px,
+    transparent 10px
+  );
+  opacity: 0.4;
+}

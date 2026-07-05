@@ -1,0 +1,22 @@
+# Dependencies (these get reinstalled via `npm install`, never uploaded)
+/node_modules
+
+# Next.js build output
+/.next/
+/out/
+
+# Environment variables - THIS CONTAINS YOUR SECRET API KEYS. NEVER COMMIT THIS.
+.env.local
+.env*.local
+
+# Firebase service account key - THIS IS A SECRET CREDENTIAL. NEVER COMMIT THIS.
+ml/serviceAccountKey.json
+
+# Python virtual environment (specific to your computer, not needed on GitHub)
+ml/venv/
+ml/__pycache__/
+
+# OS/editor junk files
+.DS_Store
+Thumbs.db
+*.log
