@@ -11,11 +11,11 @@ type Message = {
 };
 
 export default function CoachPage() {
-  const { member, loading } = useAuth();
+  const { user, member, loading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "coach",
-      text: "Hey! I'm your AI coach. Ask me about gym hours, class booking, membership, what to bring on your first visit — anything about PulseFit.",
+      text: "Hey! I'm your AI coach. Ask me about gym hours, class booking, membership, what to bring on your first visit — anything about AV Fitness Gym.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -72,7 +72,7 @@ export default function CoachPage() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      <Navbar member={member} />
+      <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12 flex-1 flex flex-col max-w-3xl w-full mx-auto">
         <p className="font-mono text-signal text-sm mb-2 tracking-widest">
@@ -80,7 +80,6 @@ export default function CoachPage() {
         </p>
         <h1 className="font-display text-5xl text-chalk mb-8">AI COACH</h1>
 
-        {/* Message list */}
         <div className="flex-1 flex flex-col gap-4 mb-4 overflow-y-auto">
           {messages.map((m, i) => (
             <div
@@ -107,7 +106,6 @@ export default function CoachPage() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
         <form onSubmit={handleSend} className="flex gap-3">
           <input
             value={input}

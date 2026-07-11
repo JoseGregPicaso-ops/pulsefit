@@ -1,11 +1,11 @@
 {
-  "name": "PulseFit - AI Training Log",
-  "short_name": "PulseFit",
-  "description": "Your AI-powered gym companion",
+  "name": "AV Fitness Gym - Goa, Camarines Sur",
+  "short_name": "AV Fitness",
+  "description": "AV Fitness Gym's AI-powered training companion",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#15171C",
-  "theme_color": "#FF4B3E",
+  "background_color": "#000000",
+  "theme_color": "#FF6F00",
   "icons": [
     {
       "src": "/icons/icon-192.png",

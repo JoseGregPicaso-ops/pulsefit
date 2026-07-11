@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 body {
-  background-color: #15171c;
-  color: #f3f1ea;
+  background-color: #000000;
+  color: #ffffff;
 }
 
-/* Tick-mark divider - our signature detail, like marks on a barbell */
+/* Tick-mark divider - signature detail, like marks on a barbell */
 .tick-divider {
   height: 1px;
   background-image: repeating-linear-gradient(
     90deg,
-    #8b93a1 0px,
-    #8b93a1 4px,
+    #9ca3af 0px,
+    #9ca3af 4px,
     transparent 4px,
     transparent 10px
   );

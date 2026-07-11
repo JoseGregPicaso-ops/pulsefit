@@ -7,16 +7,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: "#15171C",      // background
-        chalk: "#F3F1EA",    // main text
-        signal: "#FF4B3E",   // primary accent - effort/heart-rate
-        amber: "#FFB020",    // secondary accent - progress/streaks
-        steel: "#8B93A1",    // muted text / borders
+        ink: "#000000",      // background - true black
+        chalk: "#FFFFFF",    // main text - true white
+        signal: "#FF6F00",   // primary accent - AV Fitness Gym orange
+        amber: "#FF8F33",    // secondary accent - lighter orange for variety
+        steel: "#9CA3AF",    // muted gray for secondary text/borders
       },
       fontFamily: {
-        display: ["var(--font-display)"], // Bebas Neue - headings
-        body: ["var(--font-body)"],       // Inter - body text
-        mono: ["var(--font-mono)"],       // JetBrains Mono - stats/numbers
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
       },
     },
   },

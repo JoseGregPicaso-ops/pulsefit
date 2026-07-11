@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+import { friendlyAuthError, isValidEmail } from "@/lib/authErrors";
 
 export default function Signup() {
   const router = useRouter();
@@ -18,23 +19,31 @@ export default function Signup() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address (e.g. name@example.com).");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Step 1: create the login credentials in Firebase Auth
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
-      // Step 2: create a matching "member" document in Firestore
-      // This is where we'll store gym-specific data (goals, bookings, etc.)
       await setDoc(doc(db, "members", cred.user.uid), {
         name,
-        email,
+        email: email.trim(),
         role: "member",
         createdAt: new Date().toISOString(),
       });
 
-      router.push("/dashboard");
+      // Send a confirmation link to their real inbox - this is the only
+      // reliable way to confirm an email address is real and belongs to
+      // them (format checks alone can't catch typos like "gmail.comm").
+      await sendEmailVerification(cred.user);
+
+      router.push("/verify-email");
     } catch (err: any) {
-      setError("Couldn't create your account. Try a different email.");
+      setError(friendlyAuthError(err.code));
     } finally {
       setLoading(false);
     }
@@ -43,9 +52,12 @@ export default function Signup() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm">
-        <Link href="/" className="font-display text-2xl text-chalk mb-8 block">
-          PULSE<span className="text-signal">FIT</span>
+        <Link href="/" className="font-display text-2xl text-chalk mb-2 block">
+          AV <span className="text-signal">FITNESS GYM</span>
         </Link>
+        <p className="font-mono text-steel text-xs mb-8 tracking-widest">
+          GOA, CAMARINES SUR
+        </p>
         <h1 className="font-display text-4xl text-chalk mb-8">JOIN NOW</h1>
 
         <form onSubmit={handleSignup} className="flex flex-col gap-4">

@@ -8,7 +8,6 @@ import {
   runTransaction,
   query,
   where,
-  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/useAuth";
@@ -25,7 +24,7 @@ type GymClass = {
 };
 
 type Booking = {
-  id: string; // same as the booking document id
+  id: string;
   classId: string;
 };
 
@@ -36,8 +35,6 @@ export default function Classes() {
   const [busyClassId, setBusyClassId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
-  // Live-listen to the classes collection, so the list updates instantly
-  // (e.g. if an admin adds a class while you're on this page)
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "classes"), (snap) => {
       const list = snap.docs.map((d) => ({
@@ -49,7 +46,6 @@ export default function Classes() {
     return () => unsubscribe();
   }, []);
 
-  // Live-listen to MY bookings only, so I can see which classes I've already booked
   useEffect(() => {
     if (!user) return;
     const q = query(collection(db, "bookings"), where("memberId", "==", user.uid));
@@ -67,8 +63,6 @@ export default function Classes() {
   const bookingFor = (classId: string) =>
     myBookings.find((b) => b.classId === classId);
 
-  // Booking a class safely: a "transaction" makes sure two people can't both
-  // grab the last spot at the same time (it re-checks capacity right before saving)
   const handleBook = async (gymClass: GymClass) => {
     if (!user || !member) return;
     setBusyClassId(gymClass.id);
@@ -83,7 +77,6 @@ export default function Classes() {
           throw new Error("This class just filled up.");
         }
 
-        // Create the booking record
         const bookingRef = doc(collection(db, "bookings"));
         transaction.set(bookingRef, {
           memberId: user.uid,
@@ -95,7 +88,6 @@ export default function Classes() {
           bookedAt: new Date().toISOString(),
         });
 
-        // Increment the class's booked count
         transaction.update(classRef, { bookedCount: current.bookedCount + 1 });
       });
     } catch (err: any) {
@@ -136,7 +128,7 @@ export default function Classes() {
 
   return (
     <main className="min-h-screen">
-      <Navbar member={member} />
+      <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12">
         <p className="font-mono text-signal text-sm mb-2 tracking-widest">

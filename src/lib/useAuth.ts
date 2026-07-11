@@ -12,9 +12,13 @@ export type Member = {
   role: "member" | "trainer" | "admin";
 };
 
-// Any page that needs to know "who is logged in" can call this one hook
-// instead of repeating the same Firebase code everywhere.
-export function useAuth(redirectIfLoggedOut = true) {
+// Any page that needs to know "who is logged in" calls this one hook.
+//
+// requireVerified: when true (the default), a logged-in-but-unverified user
+// gets redirected to /verify-email instead of seeing the page at all - this
+// is the "hard block" enforcement. The verify-email page itself passes
+// `false` here, since it's the one place an unverified user IS allowed to be.
+export function useAuth(redirectIfLoggedOut = true, requireVerified = true) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [member, setMember] = useState<Member | null>(null);
@@ -30,6 +34,12 @@ export function useAuth(redirectIfLoggedOut = true) {
         return;
       }
 
+      if (requireVerified && !firebaseUser.emailVerified) {
+        setUser(firebaseUser);
+        router.push("/verify-email");
+        return; // stays "loading" so the page never flashes its real content
+      }
+
       setUser(firebaseUser);
       const snap = await getDoc(doc(db, "members", firebaseUser.uid));
       if (snap.exists()) {
@@ -39,7 +49,7 @@ export function useAuth(redirectIfLoggedOut = true) {
     });
 
     return () => unsubscribe();
-  }, [router, redirectIfLoggedOut]);
+  }, [router, redirectIfLoggedOut, requireVerified]);
 
   return { user, member, loading };
 }

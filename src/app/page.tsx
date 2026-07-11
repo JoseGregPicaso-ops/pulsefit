@@ -6,7 +6,7 @@ export default function Home() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-5 md:px-12">
         <span className="font-display text-2xl tracking-wide text-chalk">
-          PULSE<span className="text-signal">FIT</span>
+          AV <span className="text-signal">FITNESS GYM</span>
         </span>
         <div className="flex gap-3">
           <Link
@@ -27,7 +27,7 @@ export default function Home() {
       {/* Hero */}
       <section className="flex-1 flex flex-col justify-center px-6 md:px-12 max-w-5xl">
         <p className="font-mono text-signal text-sm mb-4 tracking-widest">
-          001 · YOUR TRAINING LOG, POWERED BY AI
+          GOA, CAMARINES SUR · POWERED BY AI
         </p>
         <h1 className="font-display text-6xl md:text-8xl leading-[0.9] text-chalk mb-6">
           TRAIN SMARTER.
@@ -35,8 +35,8 @@ export default function Home() {
           NOT JUST HARDER.
         </h1>
         <p className="font-body text-steel text-lg max-w-xl mb-8">
-          Book classes, track every rep, and let your AI coach build a plan
-          that actually adapts to how you train.
+          Book classes, track every rep, trace your outdoor runs, and let
+          your AI coach build a plan that actually adapts to how you train.
         </p>
         <div className="flex items-center gap-6">
           <Link

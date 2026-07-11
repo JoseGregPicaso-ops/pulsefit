@@ -47,12 +47,11 @@ const riskColor = (label: string) =>
   label === "High" ? "text-signal" : label === "Medium" ? "text-amber" : "text-steel";
 
 export default function Admin() {
-  const { member, loading } = useAuth();
+  const { user, member, loading } = useAuth();
   const [classes, setClasses] = useState<GymClass[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [churnScores, setChurnScores] = useState<ChurnScore[]>([]);
 
-  // Form state
   const [title, setTitle] = useState("");
   const [trainer, setTrainer] = useState("");
   const [day, setDay] = useState(DAYS[0]);
@@ -69,8 +68,6 @@ export default function Admin() {
     return () => unsubscribe();
   }, []);
 
-  // Admins can see ALL bookings (not just their own) - this powers the
-  // Smart Scheduling insights below.
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "bookings"), (snap) => {
       setBookings(
@@ -116,9 +113,6 @@ export default function Admin() {
     await deleteDoc(doc(db, "classes", classId));
   };
 
-  // --- Smart Scheduling: simple, explainable heuristics (no ML needed here) ---
-
-  // 1. Which days get the most bookings overall?
   const bookingsByDay = DAYS.map((d) => ({
     day: d,
     count: bookings.filter((b) => b.day === d).length,
@@ -127,7 +121,6 @@ export default function Admin() {
   const busiestDay = bookingsByDay[0];
   const maxDayCount = Math.max(...bookingsByDay.map((d) => d.count), 1);
 
-  // 2. Which existing classes are close to selling out? (>=70% full)
   const nearCapacity = classes
     .map((c) => ({ ...c, utilization: c.capacity ? c.bookedCount / c.capacity : 0 }))
     .filter((c) => c.utilization >= 0.7)
@@ -155,7 +148,7 @@ export default function Admin() {
 
   return (
     <main className="min-h-screen">
-      <Navbar member={member} />
+      <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12">
         <p className="font-mono text-amber text-sm mb-2 tracking-widest">
@@ -165,7 +158,6 @@ export default function Admin() {
           MANAGE CLASSES
         </h1>
 
-        {/* Create class form */}
         <form
           onSubmit={handleCreate}
           className="border border-steel/30 rounded-lg p-6 mb-10 grid md:grid-cols-2 gap-4"
@@ -220,7 +212,6 @@ export default function Admin() {
           </button>
         </form>
 
-        {/* Existing classes list */}
         <div className="tick-divider mb-6" />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
           {classes.map((c) => (
@@ -242,7 +233,6 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* Smart Scheduling insights */}
         <p className="font-mono text-amber text-sm mb-2 tracking-widest">
           006 · DATA-DRIVEN INSIGHTS
         </p>
@@ -251,7 +241,6 @@ export default function Admin() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* Busiest days chart */}
           <div className="border border-steel/30 rounded-lg p-6">
             <h3 className="font-body text-steel text-sm mb-4">
               Bookings by day of week
@@ -288,7 +277,6 @@ export default function Admin() {
             )}
           </div>
 
-          {/* Classes near capacity */}
           <div className="border border-steel/30 rounded-lg p-6">
             <h3 className="font-body text-steel text-sm mb-4">
               Classes filling up (70%+ booked)
@@ -323,7 +311,6 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Churn risk dashboard */}
         <p className="font-mono text-amber text-sm mb-2 tracking-widest">
           005 · ML-POWERED
         </p>

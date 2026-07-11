@@ -17,14 +17,12 @@ export default function PlanPage() {
   const [error, setError] = useState("");
   const [checkingSaved, setCheckingSaved] = useState(true);
 
-  // Form fields
   const [goal, setGoal] = useState("Build muscle");
   const [experience, setExperience] = useState("Beginner");
   const [daysPerWeek, setDaysPerWeek] = useState(3);
   const [equipment, setEquipment] = useState("Full gym access");
   const [notes, setNotes] = useState("");
 
-  // Load a previously saved plan, if one exists, so members don't lose it on refresh
   useEffect(() => {
     if (!user) return;
     const loadSaved = async () => {
@@ -51,7 +49,6 @@ export default function PlanPage() {
       if (!res.ok) throw new Error(data.error || "Failed to generate plan");
       setPlan(data.plan);
 
-      // Save it so it's there next time they visit
       if (user) {
         await setDoc(doc(db, "plans", user.uid), {
           plan: data.plan,
@@ -77,7 +74,7 @@ export default function PlanPage() {
 
   return (
     <main className="min-h-screen">
-      <Navbar member={member} />
+      <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12 max-w-4xl">
         <p className="font-mono text-signal text-sm mb-2 tracking-widest">
@@ -87,7 +84,6 @@ export default function PlanPage() {
           WORKOUT PLAN
         </h1>
 
-        {/* Form */}
         <form
           onSubmit={handleGenerate}
           className="border border-steel/30 rounded-lg p-6 mb-10 grid md:grid-cols-2 gap-4"
@@ -183,7 +179,6 @@ export default function PlanPage() {
           </button>
         </form>
 
-        {/* Result */}
         {plan && (
           <div>
             <div className="tick-divider mb-6" />

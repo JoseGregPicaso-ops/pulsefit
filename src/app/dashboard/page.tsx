@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <main className="min-h-screen">
-      <Navbar member={member} />
+      <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12">
         <p className="font-mono text-signal text-sm mb-2 tracking-widest">
