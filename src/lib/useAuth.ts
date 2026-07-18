@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
 export type Member = {
@@ -12,12 +12,6 @@ export type Member = {
   role: "member" | "trainer" | "admin";
 };
 
-// Any page that needs to know "who is logged in" calls this one hook.
-//
-// requireVerified: when true (the default), a logged-in-but-unverified user
-// gets redirected to /verify-email instead of seeing the page at all - this
-// is the "hard block" enforcement. The verify-email page itself passes
-// `false` here, since it's the one place an unverified user IS allowed to be.
 export function useAuth(redirectIfLoggedOut = true, requireVerified = true) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -34,16 +28,30 @@ export function useAuth(redirectIfLoggedOut = true, requireVerified = true) {
         return;
       }
 
-      if (requireVerified && !firebaseUser.emailVerified) {
+      // Accounts signed in via Google/Facebook are trusted by virtue of that
+      // provider's own login - only plain email/password accounts need our
+      // custom "click the link we emailed you" verification step.
+      const isSocialProvider = firebaseUser.providerData.some(
+        (p) => p.providerId !== "password"
+      );
+
+      if (requireVerified && !firebaseUser.emailVerified && !isSocialProvider) {
         setUser(firebaseUser);
         router.push("/verify-email");
-        return; // stays "loading" so the page never flashes its real content
+        return;
       }
 
       setUser(firebaseUser);
       const snap = await getDoc(doc(db, "members", firebaseUser.uid));
       if (snap.exists()) {
-        setMember(snap.data() as Member);
+        const memberData = snap.data() as Member;
+        setMember(memberData);
+
+        setDoc(
+          doc(db, "publicProfiles", firebaseUser.uid),
+          { name: memberData.name },
+          { merge: true }
+        ).catch(() => {});
       }
       setLoading(false);
     });

@@ -31,8 +31,7 @@ export default function Navbar({
       await sendEmailVerification(user);
       setResent(true);
     } catch (err) {
-      // Firebase rate-limits this if clicked repeatedly - fail silently,
-      // the "resent" state just won't update, which is fine.
+      // Rate-limited by Firebase if clicked repeatedly - fine to ignore
     } finally {
       setResending(false);
     }
@@ -44,42 +43,54 @@ export default function Navbar({
         <Link href="/dashboard" className="font-display text-xl text-chalk">
           AV <span className="text-signal">FITNESS GYM</span>
         </Link>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
           <Link
             href="/dashboard"
-            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden md:block"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
           >
             Dashboard
           </Link>
           <Link
             href="/classes"
-            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden md:block"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
           >
             Classes
           </Link>
           <Link
             href="/plan"
-            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden md:block"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
           >
             Plan
           </Link>
           <Link
             href="/coach"
-            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden md:block"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
           >
             Coach
+          </Link>
+          <Link
+            href="/feed"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
+          >
+            Feed
+          </Link>
+          <Link
+            href="/chat"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
+          >
+            Chat
           </Link>
           {member?.role === "admin" && (
             <Link
               href="/admin"
-              className="font-body text-sm text-signal hover:text-amber transition-colors hidden md:block"
+              className="font-body text-sm text-signal hover:text-amber transition-colors hidden lg:block"
             >
               Admin
             </Link>
           )}
           <button
             onClick={handleLogout}
-            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden md:block"
+            className="font-body text-sm text-steel hover:text-chalk transition-colors hidden lg:block"
           >
             Log out
           </button>
@@ -89,7 +100,6 @@ export default function Navbar({
         </div>
       </nav>
 
-      {/* Email verification reminder - shows on every page until confirmed */}
       {user && !user.emailVerified && (
         <div className="bg-signal/10 border-b border-signal/30 px-6 py-3 md:px-12 flex flex-wrap items-center justify-between gap-2">
           <p className="font-body text-sm text-chalk">
