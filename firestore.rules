@@ -64,10 +64,6 @@ service cloud.firestore {
       }
     }
 
-    // Social feed posts. Reactions and comment counts live as fields on the
-    // post itself, so "reacting" technically means "updating" the post - the
-    // update rule below allows that, but explicitly blocks changing the
-    // original author or text, so no one can secretly edit someone else's post.
     match /posts/{postId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
@@ -84,6 +80,16 @@ service cloud.firestore {
         allow delete: if isSignedIn() &&
           (resource.data.authorId == request.auth.uid || isAdmin());
       }
+    }
+
+    // Walk-in visitor log (front desk / digital logbook). Only admins/staff
+    // can create records, since walk-ins themselves don't have accounts.
+    // Records can't be edited or deleted once entered - same as a real
+    // paper logbook, keeps the daily record trustworthy.
+    match /walkIns/{walkInId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && request.resource.data.recordedBy == request.auth.uid;
+      allow update, delete: if false;
     }
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   collection,
   addDoc,
@@ -232,8 +233,26 @@ export default function Admin() {
       <Navbar member={member} user={user} />
 
       <div className="px-6 py-8 md:px-12">
-        <p className="font-mono text-amber text-sm mb-2 tracking-widest">ADMIN PANEL</p>
-        <h1 className="font-display text-5xl text-chalk mb-8">MANAGE CLASSES</h1>
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+          <div>
+            <p className="font-mono text-amber text-sm mb-2 tracking-widest">ADMIN PANEL</p>
+            <h1 className="font-display text-5xl text-chalk">MANAGE CLASSES</h1>
+          </div>
+          <div className="flex gap-3">
+            <Link
+              href="/admin/walkins"
+              className="font-body text-sm bg-steel/10 border border-steel/30 text-chalk px-4 py-2 rounded hover:border-signal transition-colors"
+            >
+              🚶 Walk-in desk
+            </Link>
+            <Link
+              href="/admin/analytics"
+              className="font-body text-sm bg-steel/10 border border-steel/30 text-chalk px-4 py-2 rounded hover:border-signal transition-colors"
+            >
+              📊 View full analytics
+            </Link>
+          </div>
+        </div>
 
         <form
           onSubmit={handleCreate}
